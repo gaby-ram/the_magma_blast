@@ -1,19 +1,31 @@
 ---
-title: "Untitled"
+title: "The Magma Blast Flex Dashboard"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
 ```
 
-Column {data-width=650}
+Column {.sidebar}
+--------------------------------------------------
+
+Some fun text about why volcano eruptions are great to know about. Yaayyy!!!
+
+Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart A
+### World
+
+```{r}
+
+```
+
+### USA
 
 ```{r}
 
@@ -22,13 +34,13 @@ Column {data-width=650}
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Time Series Plot
 
 ```{r}
 
 ```
 
-### Chart C
+### Interactive Table/Plot
 
 ```{r}
 
