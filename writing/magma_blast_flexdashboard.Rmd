@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Magma_blasts"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
