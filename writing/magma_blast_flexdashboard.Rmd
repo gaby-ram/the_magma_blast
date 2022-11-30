@@ -11,7 +11,7 @@ runtime: shiny
 library(flexdashboard)
 ```
 
-```{r}
+```{r include=FALSE}
 # load packages
 library(tidyverse)
 library(maps)
@@ -23,7 +23,7 @@ library(ggthemes)
 library(ggridges)
 ```
 
-```{r}
+```{r include=FALSE}
 #Reading in the data
 eruptions <- read_csv("../data/eruptions.csv")
 events <- read_csv("../data/events.csv")
@@ -52,18 +52,18 @@ Column {data-width=350}
 
 
 
-```{r}
+```{r include=FALSE}
 
 glimpse(volcano)
 ```
 
-```{r}
+```{r include=FALSE}
 # filter Japanese data only
 japan_volc <- volcano %>% 
   filter(country == "Japan")
 ```
 
-```{r}
+```{r include=FALSE}
 # load map for Japan
 japan <- map_data("world", region = "Japan")
 ```
