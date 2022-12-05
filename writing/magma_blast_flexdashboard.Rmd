@@ -74,23 +74,22 @@ Column {data-width=350}
 glimpse(volcano)
 ```
 
-```{r }
+```{r include=FALSE}
 # filter US data only
 us_volc <- volcano %>% 
   filter(country == "United States")%>%
-  filter(region == "Canada and Western USA", "Alaska", "Hawaii and Pacific Ocean")
+  filter(region %in% c( "Canada and Western USA", "Alaska", "Hawaii and Pacific Ocean"))
 head(us_volc)
 ```
 
-```{r}
-volcano %>% filter(country == "United States") %>% select("region") %>% unique()
-```
 
 ```{r include=FALSE}
 # load map for US
 usa <- map_data("world", region = "usa")
 
 ```
+
+Change to an sf object by saying which columns are the coordinates and setting a CRS:
 
 ```{r include=FALSE}
 # map with tigris
@@ -103,7 +102,7 @@ class(usa_tigris)
 p1 <- ggplot() +
   geom_density_ridges_gradient(
     data = us_volc,
-    aes(x = elevation, y = subregion, fill = stat(x))
+    aes(x = elevation, y = region, fill = stat(x))
   ) +
   scale_fill_viridis() +
   theme_minimal() +
@@ -146,7 +145,7 @@ annotate("text", x = 141, y = 44, label = "Hokkaido") +
 ```{r}
 # specify layout for patchwork  
 layout <- c(
-  area(0.5, 0.5, 1, 1),
+  area(1, 1, 2, 2),
   area(1.5, 1.5, 5, 5)
 )
 ```
@@ -154,16 +153,16 @@ layout <- c(
 
 ```{r}
 # put it all together
-p2 +
-  p1 + 
-  #plot_layout(design = layout) +  
+p1 +
+  p2 + 
+  plot_layout(design = layout) +  
   plot_annotation(
   title = "Volcanoes in The United States",
   subtitle = "Elevation of change this",
   caption = "Data from The Smithsonian Institution"
 ) 
 
-#ggsave(filename = "Japan_volcanoes.png")
+#ggsave(filename = "US_volcanoes.png")
 
 ```
 
