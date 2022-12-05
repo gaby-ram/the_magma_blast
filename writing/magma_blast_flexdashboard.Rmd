@@ -58,14 +58,15 @@ glimpse(volcano)
 ```
 
 ```{r include=FALSE}
-# filter Japanese data only
+# filter US data only
 us_volc <- volcano %>% 
   filter(country == "United States")
 ```
 
 ```{r include=FALSE}
-# load map for Japan
+# load map for US
 usa <- map_data("world", region = "usa")
+
 ```
 
 ```{r}
@@ -84,6 +85,7 @@ p1 <- ggplot() +
     axis.text.x = element_blank(),
     axis.title.x = element_blank()
   )
+p1
 ```
 
 ```{r}
@@ -104,17 +106,19 @@ p2 <- ggplot() +
     y = "latitude",
     x = "longitude"
   ) +
-  annotate("text", x = 141, y = 44, label = "Hokkaido") +
+
+  theme_void() 
+p2
+```
+
+annotate("text", x = 141, y = 44, label = "Hokkaido") +
   annotate("text", x = 137, y = 38, label = "Honshu") +
   annotate("text", x = 127, y = 31, label = "Ryukyu Islands\n & Kyushu") +
   annotate("text", x = 142, y = 29, label = "Izu, Volcano\n & Mariana Islands") +
-  theme_void() 
-```
-
 ```{r}
 # specify layout for patchwork  
 layout <- c(
-  area(1, 1, 2, 2),
+  area(0.5, 0.5, 1, 1),
   area(1.5, 1.5, 5, 5)
 )
 ```
@@ -122,7 +126,7 @@ layout <- c(
 
 ```{r}
 # put it all together
-p1 + p2 + 
+p2 + p1 + 
   #plot_layout(design = layout) +  
   plot_annotation(
   title = "Volcanoes in The United States",
