@@ -59,20 +59,20 @@ glimpse(volcano)
 
 ```{r include=FALSE}
 # filter Japanese data only
-japan_volc <- volcano %>% 
-  filter(country == "Japan")
+us_volc <- volcano %>% 
+  filter(country == "United States")
 ```
 
 ```{r include=FALSE}
 # load map for Japan
-japan <- map_data("world", region = "Japan")
+usa <- map_data("world", region = "usa")
 ```
 
 ```{r}
 # ridgeline plot of elevation across subregions
 p1 <- ggplot() +
   geom_density_ridges_gradient(
-    data = japan_volc,
+    data = us_volc,
     aes(x = elevation, y = subregion, fill = stat(x))
   ) +
   scale_fill_viridis() +
@@ -90,13 +90,13 @@ p1 <- ggplot() +
 # map of volcano locations, colour coded by elevation
 p2 <- ggplot() +
   geom_polygon(
-    data = japan,
+    data = usa,
     aes(x = long, y = lat, group = group),
-    fill = "grey",
+    fill = "firebrick2",
     alpha = 0.4
   ) +
   geom_point(
-    data = japan_volc,
+    data = us_volc,
     aes(x = longitude, y = latitude, colour = elevation),
     ) +
   scale_color_viridis() +
@@ -123,10 +123,10 @@ layout <- c(
 ```{r}
 # put it all together
 p1 + p2 + 
-  plot_layout(design = layout) +  
+  #plot_layout(design = layout) +  
   plot_annotation(
-  title = "Volcanoes in Japan",
-  subtitle = "Elevation of 92 volcanoes across 4 regions in Japan",
+  title = "Volcanoes in The United States",
+  subtitle = "Elevation of change this",
   caption = "Data from The Smithsonian Institution"
 ) 
 
