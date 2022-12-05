@@ -43,6 +43,36 @@ Column {data-width=350}
 ### Interactive Table/Plot
 
 ```{r}
+##cleaning eruption table
+eruptions_clean <- eruptions %>% 
+  filter(eruption_category == "Confirmed Eruption" & start_year >= 1700 & 
+           evidence_method_dating %in% c("Historical Observations", "Seismicity")) %>% 
+  select("volcano_number", "volcano_name", "eruption_number","eruption_category",
+         "start_year", "end_year", "evidence_method_dating", "vei") %>% 
+  drop_na() %>% group_by(volcano_name) %>% 
+  mutate(number_of_events = n(), 
+         max_vei = max(vei)) %>% 
+  ungroup()
+##cleaning volcano table
+volcano_clean <- volcano %>% 
+  select("population_within_100_km", "longitude", "latitude", 
+         "country","region", "volcano_number", "volcano_name", 
+         "primary_volcano_type")
+##Joining tables based on cleaned eruption table
+final_table <- eruptions_clean %>% 
+  left_join(volcano_clean, by = "volcano_name") %>% 
+  mutate(volcano_name = fct_reorder(volcano_name, number_of_events)) %>% 
+  filter(number_of_events > 19) %>% 
+  drop_na()
+```
 
+```{r the_plot}
+final_table %>% 
+  ggplot()+
+  geom_point(aes(x = start_year, y = volcano_name, size = max_vei))
+final_table %>% 
+  ggplot()+
+  geom_col(aes(x = volcano_name, y = population_within_100_km))+
+  coord_flip()
 ```
 
