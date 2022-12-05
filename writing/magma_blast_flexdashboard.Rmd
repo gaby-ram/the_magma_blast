@@ -11,6 +11,46 @@ runtime: shiny
 library(flexdashboard)
 ```
 
+```{r include=FALSE}
+# load packages
+library(tidyverse)
+library(maps)
+library(patchwork)
+library(viridis)
+library(hrbrthemes)
+library(ggplot2)
+library(ggthemes)
+library(ggridges)
+library(tigris)
+library(sf)
+
+
+library(lubridate)
+library(broom)
+library(knitr)
+library(scales)
+library(viridis)
+library(shiny)
+library(leaflet)
+library(DT)
+library(plotly)
+library(flexdashboard)
+library(jsonlite)
+library(maptools)
+library(ggplot2)
+```
+
+```{r include=FALSE}
+#Reading in the data
+eruptions <- read_csv("../data/eruptions.csv")
+events <- read_csv("../data/events.csv")
+sulfur <- read_csv("../data/sulfur.csv")
+tree_rings <- read_csv("../data/tree_rings.csv")
+events <- read_csv("../data/events.csv")
+volcano <- read_csv("../data/volcano.csv")
+head(eruptions)
+```
+
 Column {.sidebar}
 --------------------------------------------------
 
@@ -27,9 +67,113 @@ Column {data-width=350}
 
 ### USA
 
-```{r}
+
+
+```{r include=FALSE}
+
+glimpse(volcano)
+```
+
+```{r include=FALSE}
+# filter US data only
+us_volc <- volcano %>% 
+  filter(country == "United States")%>%
+  filter(region %in% c( "Canada and Western USA", "Alaska", "Hawaii and Pacific Ocean"))
+head(us_volc)
+```
+
+
+```{r include=FALSE}
+# load map for US
+usa <- map_data("world", region = "usa")
 
 ```
+
+Change to an sf object by saying which columns are the coordinates and setting a CRS:
+```{r}
+usa_crs<- st_as_sf(us_volc, coords = c("longitude", "latitude")) %>%
+st_set_crs(4269) #setting CRS
+usa_crs %>% slice(1:3)
+```
+
+```{r include=FALSE}
+# map with tigris
+usa_tigris <-tracts( cb = TRUE, class = "sf")
+class(usa_tigris)
+```
+
+```{r}
+# ridgeline plot of elevation across subregions
+p1 <- ggplot() +
+  geom_density_ridges_gradient(
+    data = us_crs,
+    aes(x = elevation, y = region, fill = stat(x))
+  ) +
+  scale_fill_viridis() +
+  theme_minimal() +
+  theme(
+    legend.position = "none", 
+    panel.grid = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank()
+  )
+p1
+```
+current problem is data points are positive longitude 
+```{r}
+# map of volcano locations, colour coded by elevation
+p2 <- ggplot() +
+  geom_polygon(
+    data = usa,
+    aes(x = long, y = lat, group = group),
+    fill = "firebrick2",
+    alpha = 1) +
+  geom_sf(data = us-crs, aes(color = elevation))+
+  
+  
+  theme_void() 
+p2
+```
+geom_point(
+    data = us_crs,
+    aes(x = longitude, y = latitude, colour = elevation),
+    ) +
+    scale_color_viridis() +
+  labs(
+    y = "latitude",
+    x = "longitude")+
+
+
+annotate("text", x = 141, y = 44, label = "Hokkaido") +
+  annotate("text", x = 137, y = 38, label = "Honshu") +
+  annotate("text", x = 127, y = 31, label = "Ryukyu Islands\n & Kyushu") +
+  annotate("text", x = 142, y = 29, label = "Izu, Volcano\n & Mariana Islands") +
+```{r}
+# specify layout for patchwork  
+layout <- c(
+  area(1, 1, 2, 2),
+  area(1.5, 1.5, 5, 5)
+)
+```
+
+
+```{r}
+# put it all together
+p1 +
+  p2 + 
+  plot_layout(design = layout) +  
+  plot_annotation(
+  title = "Volcanoes in The United States",
+  subtitle = "Elevation of change this",
+  caption = "Data from The Smithsonian Institution"
+) 
+
+#ggsave(filename = "US_volcanoes.png")
+
+```
+
+
 
 Column {data-width=350}
 -----------------------------------------------------------------------
