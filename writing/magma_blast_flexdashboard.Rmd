@@ -21,6 +21,23 @@ library(hrbrthemes)
 library(ggplot2)
 library(ggthemes)
 library(ggridges)
+library(tigris)
+library(sf)
+
+
+library(lubridate)
+library(broom)
+library(knitr)
+library(scales)
+library(viridis)
+library(shiny)
+library(leaflet)
+library(DT)
+library(plotly)
+library(flexdashboard)
+library(jsonlite)
+library(maptools)
+library(ggplot2)
 ```
 
 ```{r include=FALSE}
@@ -57,16 +74,28 @@ Column {data-width=350}
 glimpse(volcano)
 ```
 
-```{r include=FALSE}
+```{r }
 # filter US data only
 us_volc <- volcano %>% 
-  filter(country == "United States")
+  filter(country == "United States")%>%
+  filter(region == "Canada and Western USA", "Alaska", "Hawaii and Pacific Ocean")
+head(us_volc)
+```
+
+```{r}
+volcano %>% filter(country == "United States") %>% select("region") %>% unique()
 ```
 
 ```{r include=FALSE}
 # load map for US
 usa <- map_data("world", region = "usa")
 
+```
+
+```{r include=FALSE}
+# map with tigris
+usa_tigris <-tracts( cb = TRUE, class = "sf")
+class(usa_tigris)
 ```
 
 ```{r}
@@ -95,8 +124,7 @@ p2 <- ggplot() +
     data = usa,
     aes(x = long, y = lat, group = group),
     fill = "firebrick2",
-    alpha = 0.4
-  ) +
+    alpha = 1) +
   geom_point(
     data = us_volc,
     aes(x = longitude, y = latitude, colour = elevation),
@@ -104,13 +132,13 @@ p2 <- ggplot() +
   scale_color_viridis() +
   labs(
     y = "latitude",
-    x = "longitude"
-  ) +
+    x = "longitude")+
 
   theme_void() 
 p2
 ```
 
+ +
 annotate("text", x = 141, y = 44, label = "Hokkaido") +
   annotate("text", x = 137, y = 38, label = "Honshu") +
   annotate("text", x = 127, y = 31, label = "Ryukyu Islands\n & Kyushu") +
@@ -126,7 +154,8 @@ layout <- c(
 
 ```{r}
 # put it all together
-p2 + p1 + 
+p2 +
+  p1 + 
   #plot_layout(design = layout) +  
   plot_annotation(
   title = "Volcanoes in The United States",
