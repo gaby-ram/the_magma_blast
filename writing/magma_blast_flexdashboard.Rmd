@@ -96,9 +96,9 @@ st_set_crs(4269) #setting CRS
 usa_crs %>% slice(1:3)
 ```
 
-```{r include=FALSE}
+```{r}
 # map with tigris
-usa_tigris <-tracts( cb = TRUE, class = "sf")
+usa_tigris <-regions(resolution = "500k", year = NULL, class = "sf")
 class(usa_tigris)
 ```
 
@@ -124,17 +124,30 @@ current problem is data points are positive longitude
 ```{r}
 # map of volcano locations, colour coded by elevation
 p2 <- ggplot() +
-  geom_polygon(
-    data = usa,
+  geom_sf(data = usa_tigris)+
+  #geom_sf(data = usa_crs, aes(color = elevation))+
+  
+  
+  #theme_void() 
+p2
+
+```
+ggplot() + 
+  geom_sf(data = ga_f)+
+  xlim(c(-84.73, -84.3)) + ylim(c(33.6, 34.0))+
+  facet_wrap(~status, ncol = 2)+
+  geom_sf(data = at_hom, aes(color = victim_race))+
+  ggtitle("Solved vs. Unsolved Homicides in Atlanta by Race")+
+  labs(color = "Victim Race")+
+  theme_few()+ 
+  theme(axis.text.x = element_text(angle = 45))
+
+
+ geom_polygon(
+    data = usa_tigris,
     aes(x = long, y = lat, group = group),
     fill = "firebrick2",
-    alpha = 1) +
-  geom_sf(data = usa_crs, aes(color = elevation))+
-  
-  
-  theme_void() 
-p2
-```
+    alpha = 1)+
 geom_point(
     data = us_crs,
     aes(x = longitude, y = latitude, colour = elevation),
