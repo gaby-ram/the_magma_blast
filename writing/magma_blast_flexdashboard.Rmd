@@ -68,18 +68,6 @@ Column {data-width=350}
 
 ### USA
 
-
-
-```{r include=FALSE}
-
-glimpse(volcano)
-```
-
-
-
-
-
-
 ```{r include=FALSE}
 
 glimpse(volcano)
@@ -96,6 +84,14 @@ usa_volc <- volcano %>%
                       labels = c("Western USA", "Alaska", "Hawaii")))
   
 ```
+
+
+```{r}
+#Merge eruptions info into volcano data bu volcano number
+usa_ve<- full_join(usa_volc, eruptions, by = "volcano_number")
+head(usa_ve)
+```
+
 
 	
 ```{r}
@@ -161,10 +157,9 @@ p2 <- ggplot() +
   annotate("text", x = 141, y = 44, label = "Hawaii") +
   annotate("text", x = 137, y = 38, label = "Western USA") +
   annotate("text", x = 127, y = 31, label = "Alaska") +
-  annotate("text", x = 142, y = 29, label = "Izu, Volcano\n & Mariana Islands") +
   
-  theme_void()+
-  theme(panel.background = element_rect(color = "black", fill = "lavender"))
+  theme_void()
+  #theme(panel.background = element_rect(color = "black", fill = "lavender"))
 p2
 
 ```
