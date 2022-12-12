@@ -74,7 +74,7 @@ Column {data-width=350}
 glimpse(volcano)
 ```
 
-```{r}
+```{r include=FALSE}
 # filter US data only
 usa_volc <- volcano %>% 
   filter(country == "United States")%>%
@@ -89,12 +89,12 @@ usa_volc <- volcano %>%
 head(usa_volc)
   
 ```
-```{r}
+```{r include=FALSE}
 usa_volc[64, 9] = -180.42
 usa_volc[14, 9] = -184.089
 ```
 
-```{r}
+```{r include=FALSE}
 #Merge eruptions info into volcano data bu volcano number
 usa_ve<- full_join(usa_volc, eruptions, by = "volcano_number")
 
@@ -122,15 +122,16 @@ usa <- map_data("world", region = "usa", class = "sf")
 
 ```
 
-Change to an sf object by saying which columns are the coordinates and setting a CRS:
-```{r}
+
+```{r include=FALSE}
+#Change to an sf object by saying which columns are the coordinates and setting a CRS:
 usa_crs<- st_as_sf(usa_ve, coords = c("longitude", "latitude")) %>%
   st_set_crs(4269) #setting CRS
 usa_crs %>% slice(1:3)
 ```
 
 
-```{r}
+```{r include=FALSE}
 # ridgeline plot of elevation across regions
 p1 <- ggplot() +
   geom_density_ridges_gradient(
@@ -150,8 +151,8 @@ p1 <- ggplot() +
 p1
 ```
 
-using original code again
-```{r}
+
+```{r include=FALSE}
 # map of volcano locations, colour coded by elevation
 p2 <- ggplot() +
   geom_polygon(
@@ -175,19 +176,8 @@ p2 <- ggplot() +
 p2
 
 ```
-geom_point(
-    data = usa_volc,
-    aes(x = longitude, y = latitude, colour = subregion),
-  ) +
 
-labs(
-    y = "latitude",
-    x = "longitude")+
-  annotate("text", x = 141, y = 44, label = "Hawaii") +
-  annotate("text", x = 137, y = 38, label = "Western USA") +
-  annotate("text", x = 127, y = 31, label = "Alaska") +
-
-```{r}
+```{r include=FALSE}
 # specify layout for patchwork  
 layout <- c(
   area(0, 0, 5, 5), 
@@ -196,7 +186,7 @@ layout <- c(
 ```
 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # put it all together
 p2 +
   p1 + 
