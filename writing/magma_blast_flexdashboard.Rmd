@@ -24,7 +24,7 @@ library(ggridges)
 library(tigris)
 library(sf)
 
-
+library(lemon)
 library(lubridate)
 library(broom)
 library(knitr)
@@ -38,6 +38,7 @@ library(flexdashboard)
 library(jsonlite)
 library(maptools)
 library(ggplot2)
+library(dplyr)
 ```
 
 ```{r include=FALSE}
@@ -48,6 +49,8 @@ sulfur <- read_csv("../data/sulfur.csv")
 tree_rings <- read_csv("../data/tree_rings.csv")
 events <- read_csv("../data/events.csv")
 volcano <- read_csv("../data/volcano.csv")
+c_and_c <- read.csv("../data/continent_and_countries.csv") 
+colnames(c_and_c) <- c("country", "continent")
 head(eruptions)
 ```
 
@@ -205,18 +208,84 @@ volcano_clean <- volcano %>%
 ##Joining tables based on cleaned eruption table
 final_table <- eruptions_clean %>% 
   left_join(volcano_clean, by = "volcano_name") %>% 
-  mutate(volcano_name = fct_reorder(volcano_name, number_of_events)) %>% 
-  filter(number_of_events > 19) %>% 
+  full_join(c_and_c, by = "country") %>% 
+  mutate(volcano_name = fct_reorder(volcano_name, number_of_events),
+         population = log10(population_within_100_km+1),
+         long_lab = round(longitude, 0),
+         long_lab_2 = ifelse(long_lab>0, paste0(long_lab, "N"), paste0(-long_lab, "S"))) %>% 
+  filter(number_of_events > 5 & number_of_events < 10) %>% 
   drop_na()
+final_table$primary_volcano_type <- str_replace_all(final_table$primary_volcano_type, 
+                                                    c("Lava dome(s)" ="Lava dome",
+                                                  "Stratovolcano(es)"= "Stratovolcano"))
+long_lab_2 <- final_table$long_lab_2
 ```
 
 ```{r the_plot}
-final_table %>% 
+##Point Plot
+left <- final_table %>% 
   ggplot()+
-  geom_point(aes(x = start_year, y = volcano_name, size = max_vei))
-final_table %>% 
+  geom_point(aes(x = start_year, y = volcano_name, size = vei, 
+                 color = continent), alpha = 0.7, stroke=1.2)+
+  scale_size_area(breaks=c(1,2,3,4,5,6), max_size = 12,name = "Volcano \nExplosivity \nIndex")+
+  scale_color_brewer(palette="Dark2", name = "Location (Continent)")+
+  scale_x_continuous(breaks=seq(1700, 2020, 40)) +
+  scale_y_discrete(expand=c(0.025,0.025))+
+  labs(x='', y='')+
+  theme_get()+
+  guides(color = guide_legend(override.aes = list(size = 10)))+
+  theme(legend.position = 'bottom', 
+        legend.key = element_blank(),
+        legend.title = element_text(face="bold", colour = "black"),
+        panel.grid.major.y = element_line(colour= 'black'),
+        panel.grid.major.x = element_line(colour = "white"),
+        panel.border = element_blank(),
+        axis.text = element_text(size=10, colour='black'),
+        title = element_text(colour='black', size=14, face='bold', hjust=0),
+        plot.subtitle = element_text(colour='white', size=9, face='bold', hjust=0),
+        plot.background = element_rect(color='white',fill = "white"),
+        panel.background = element_rect(fill = "white",
+                                        colour = "white",
+                                        linewidth = 5, linetype = "solid"),
+        plot.margin=unit(c(0.5, 0.2, 0, 0), 'cm'))+
+  ggtitle("Catasprophic Eruptions since 1700")
+```
+
+```{r plot_2}
+##Bar Chart
+right <- final_table %>% 
+  group_by(volcano_name, population, primary_volcano_type, country, long_lab_2) %>% 
+  summarise(count= n()) %>% 
+  ungroup() %>% 
   ggplot()+
-  geom_col(aes(x = volcano_name, y = population_within_100_km))+
-  coord_flip()
+  geom_col(aes(x = volcano_name, y = population, 
+               fill = primary_volcano_type))+
+  geom_text(aes(x = volcano_name, y = population, label = country), size = 3.5,
+            hjust = -0.2, color = "black")+
+  scale_fill_discrete(name = "Volcano Type")+
+  theme_get()+
+  guides(fill=guide_legend(ncol=3))+
+  theme(legend.position = "bottom",
+        legend.key = element_blank(),
+        axis.text.y = element_text(size=10, colour='black', hjust=0.5),
+        axis.text.x = element_text(size=10, colour='black'),
+        axis.line.x = element_line(color='black'),
+        plot.background = element_rect(color='white', fill = "white"),
+        title = element_text(colour='black', size=14, face='bold', hjust=0),
+        panel.border = element_blank(),
+        plot.subtitle = element_text(colour='white', size=9, face='bold', hjust=0),
+        panel.background = element_rect(fill = "white",
+                                    colour = "white",
+                                    size = 0.5, linetype = "solid"),
+        plot.margin=unit(c(0.5, 1, 0.2, -0.5), 'cm'))+
+  coord_flip()+
+  labs(x='', y='Population within 100km of Volcano')+
+  scale_y_continuous(expand = c(0, 0), breaks=seq(0, 10, 2.5)) +
+  scale_x_discrete(expand=c(0.025,0.025), label = long_lab_2) +
+  ggtitle("Population and Country")
+```
+
+```{r fig.dim = c(20, 15)}
+cowplot::plot_grid(left, right, rel_widths = c(1, 0.5), nrow=1,  label_size=15)
 ```
 
