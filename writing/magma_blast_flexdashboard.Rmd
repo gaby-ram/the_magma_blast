@@ -73,7 +73,7 @@ Column {data-width=350}
 glimpse(volcano)
 ```
 
-```{r include=FALSE}
+```{r}
 # filter US data only
 usa_volc <- volcano %>% 
   filter(country == "United States")%>%
@@ -81,15 +81,30 @@ usa_volc <- volcano %>%
   mutate(region = factor(region, levels = c("Canada and Western USA", 
                                                       "Alaska", 
                                                       "Hawaii and Pacific Ocean"), 
-                      labels = c("Western USA", "Alaska", "Hawaii")))
+                      labels = c("Western USA", "Alaska", "Hawaii")))%>%
+  mutate(subregion = factor(subregion, levels = c("USA (Washington)", "Aleutian Islands", "Alaska Peninsula", "Alaska (southwestern)", "USA (Oregon)", "USA (Idaho)", "USA (Utah)", "USA (New Mexico)", "USA (California)",  "Alaska (eastern)", "Hawaiian Islands", "Alaska (western)", "USA (Arizona)", "USA (Nevada)", "USA (Wyoming)" ), 
+                      labels = c("Washington", "Aleutian Islands", "Alaska Peninsula", "Alaska", "Oregon", "Idaho", "Utah", "New Mexico", "California",  "Alaska", "Hawaii", "Alaska", "Arizona", "California", "Wyoming" )))%>%
+  select(volcano_number, volcano_name, primary_volcano_type:subregion, elevation:longitude)%>%
+  arrange(.data = usa_volc, subregion)
+
+head(usa_volc)
   
 ```
 
 
 ```{r}
 #Merge eruptions info into volcano data bu volcano number
-usa_ve<- full_join(usa_volc, eruptions, by = "volcano_number")
+usa_ve<- full_join(usa_volc, eruptions, by = "volcano_number")%>%
+  drop_na(region)%>%
+  select(-latitude.y, -longitude.y, volcano_name.y)%>%
+  mutate(latitude=latitude.x)%>%
+  mutate(longitude=longitude.x)%>%
+  mutate(volcano_name= volcano_name.x)
+
 head(usa_ve)
+```
+```{r}
+
 ```
 
 
@@ -119,9 +134,9 @@ usa_crs %>% slice(1:3)
 # ridgeline plot of elevation across regions
 p1 <- ggplot() +
   geom_density_ridges_gradient(
-    data = usa_volc,
-    aes(x = elevation, y = region, fill = stat(x))
-  ) +
+    data = usa_ve,
+    aes(x = elevation, y = subregion, fill = stat(x))
+  ) + #population_within_100_km last_eruption_year
   scale_fill_viridis() +
   theme_minimal() +
   theme(
@@ -147,16 +162,11 @@ p2 <- ggplot() +
   ) +
   xlim(c(-186, -65)) + ylim(c(18, 72))+
   geom_point(
-    data = usa_volc,
+    data = usa_ve,
     aes(x = longitude, y = latitude, colour = elevation),
   ) +
   scale_color_viridis() +
-  labs(
-    y = "latitude",
-    x = "longitude")+
-  annotate("text", x = 141, y = 44, label = "Hawaii") +
-  annotate("text", x = 137, y = 38, label = "Western USA") +
-  annotate("text", x = 127, y = 31, label = "Alaska") +
+  
   
   theme_void()
   #theme(panel.background = element_rect(color = "black", fill = "lavender"))
@@ -164,13 +174,18 @@ p2
 
 ```
 
-
+labs(
+    y = "latitude",
+    x = "longitude")+
+  annotate("text", x = 141, y = 44, label = "Hawaii") +
+  annotate("text", x = 137, y = 38, label = "Western USA") +
+  annotate("text", x = 127, y = 31, label = "Alaska") +
 
 ```{r}
 # specify layout for patchwork  
 layout <- c(
-  area(0.5, 0.5, 1, 1),
-  area(1.5, 1.5, 5, 5)
+  area(0, 5, 2.5, 5),
+  area(0, 0, 5, 6)
 )
 ```
 
