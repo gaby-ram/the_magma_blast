@@ -59,13 +59,9 @@ head(eruptions)
 
 ### VOLCANOES AROUND THE WORLD
 
-<<<<<<< HEAD
 
 
 ```{r}
-=======
-```{r include=FALSE}
->>>>>>> c3b0c64f208e3565582055b32cc87bf0528546e2
 template <- "<p>{volcano_name}</p><p>{last_eruption_year}</p"
 volcano_html <- volcano %>% 
   mutate(html = glue(template))
@@ -139,7 +135,7 @@ leaflet(volcano_selected) %>%
 
 ---
 
-<<<<<<< HEAD
+
 **Interesting Facts**
 
 Volcanic terrain is the result of the accumulation of erupted lava, unlike mountains 
@@ -157,15 +153,6 @@ potentially active volcanos world wide.
 * The color scheme is showing the different types of volcanos
 
 * The popups show the name of the volcano and when it last erupted 
-=======
-Interesting Facts About Plot
-
-- The bubbles are showing the total number of volcanos in those regions
-
-- The color scheme is showing the different types of volcanoes
-
-- The popups show the name of the volcano and when it last erupted 
->>>>>>> ac4137598506b55e3a4d04e2d265c1e9ba70c093
 
 
 ### MAJOR ERUPTIONS SINCE 1700 {data-commentary-width=400}
@@ -274,7 +261,7 @@ right <- final_table %>%
 ```
 
 ```{r fig.dim = c(50, 25)}
-cowplot::plot_grid(left, right, rel_widths = c(1, 0.5), nrow=1)
+cowplot::plot_grid(left, right, rel_widths = c(1, 0.7), nrow=1)
 
 ```
 
