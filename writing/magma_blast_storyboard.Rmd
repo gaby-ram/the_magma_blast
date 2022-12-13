@@ -3,6 +3,8 @@ title: "The Magma Blast"
 output: 
   flexdashboard::flex_dashboard:
     storyboard: true
+    theme: journal
+    source_code: embeded
 ---
 ```{r setup, include=FALSE}
 library(flexdashboard)
@@ -55,7 +57,7 @@ head(eruptions)
 
 ### VOLCANOES AROUND THE WORLD
 
-```{r}
+```{r include=FALSE}
 template <- "<p>{volcano_name}</p><p>{last_eruption_year}</p"
 volcano_html <- volcano %>% 
   mutate(html = glue(template))
@@ -69,10 +71,11 @@ head(volcano_selected)
 total_years <- volcano_selected %>%  
   select(last_eruption_year) %>% 
   mutate(years = str_count(last_eruption_year))
+```
 
-previewColors(colorFactor("BuPu", domain = NULL), LETTERS[1:5])
-
+```{r the plot}
 type <- colorFactor(topo.colors(16), domain = volcano_selected$primary_volcano_type)
+
 
 leaflet(volcano_selected) %>%  
   addTiles() %>% 
@@ -102,7 +105,6 @@ total_years <- volcano_selected %>%
   select(last_eruption_year) %>% 
   mutate(years = str_count(last_eruption_year))
 
-previewColors(colorFactor("BuPu", domain = NULL), LETTERS[1:5])
 
 type <- colorFactor(topo.colors(16), domain = volcano_selected$primary_volcano_type)
 
@@ -128,10 +130,23 @@ leaflet(volcano_selected) %>%
 
 ---
 
-Interesting Facts About Plot
-- The bubles are showing the total number of volcanos in those regions 
-- The color scheme is showing the different types of volcanos
-- The popups show the name of the volcano and when it last erupted 
+**Interesting Facts**
+
+Volcanic terrain is the result of the accumulation of erupted lava, unlike mountains 
+that are the result of erosion of earth's crust, uplifting, folding, and faulting.
+A vent that connects the molten areas or molten rock(magma) are formed through a
+series of cracks beneath and within the volcano. Approximately there are 1,350
+potentially active volcanos world wide.
+[link](https://www.usgs.gov/programs/VHP/about-volcanoes)
+
+**About the Plot**
+
+
+* The bubbles are showing the total number of volcanos in those regions
+
+* The color scheme is showing the different types of volcanos
+
+* The popups show the name of the volcano and when it last erupted 
 
 
 ### MAJOR ERUPTIONS SINCE 1700
