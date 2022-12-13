@@ -37,6 +37,7 @@ library(ggplot2)
 library(dplyr)
 library(usmap)
 library(scales)
+library(glue)
 ```
 
 ```{r include=FALSE}
@@ -54,10 +55,83 @@ head(eruptions)
 
 ### VOLCANOES AROUND THE WORLD
 
+```{r}
+template <- "<p>{volcano_name}</p><p>{last_eruption_year}</p"
+volcano_html <- volcano %>% 
+  mutate(html = glue(template))
+
+volcano_selected <- volcano_html %>% 
+  select(volcano_name, latitude, longitude, primary_volcano_type, country, last_eruption_year, html) %>% 
+  mutate(popup_info = paste("<b>Volcano name:<b>", volcano_name, "<br/>",
+                            "<b>Last eruption year:<b>", last_eruption_year))
+head(volcano_selected)
+
+total_years <- volcano_selected %>%  
+  select(last_eruption_year) %>% 
+  mutate(years = str_count(last_eruption_year))
+
+previewColors(colorFactor("BuPu", domain = NULL), LETTERS[1:5])
+
+type <- colorFactor(topo.colors(16), domain = volcano_selected$primary_volcano_type)
+
+leaflet(volcano_selected) %>%  
+  addTiles() %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  addMarkers(lat = ~ latitude,
+             lng = ~ longitude,
+             clusterOptions = markerClusterOptions()) %>% 
+  addCircles(lat = ~ latitude,
+             lng = ~ longitude,
+             popup = ~ popup_info,
+             radius = 5,
+             weight = 5,
+             color = ~ type(primary_volcano_type)) %>% 
+  addLegend(data = volcano_selected,
+            title = "Type of volcano",
+            pal = type, 
+            values = ~ primary_volcano_type,
+            opacity = 1) %>% 
+  addScaleBar(position = "bottomleft")
+volcano_selected <- volcano_html %>% 
+  select(volcano_name, latitude, longitude, primary_volcano_type, country, last_eruption_year, html) %>% 
+  mutate(popup_info = paste("<b>Volcano name:<b>", volcano_name, "<br/>",
+                            "<b>Last eruption year:<b>", last_eruption_year))
+head(volcano_selected)
+
+total_years <- volcano_selected %>%  
+  select(last_eruption_year) %>% 
+  mutate(years = str_count(last_eruption_year))
+
+previewColors(colorFactor("BuPu", domain = NULL), LETTERS[1:5])
+
+type <- colorFactor(topo.colors(16), domain = volcano_selected$primary_volcano_type)
+
+leaflet(volcano_selected) %>%  
+  addTiles() %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  addMarkers(lat = ~ latitude,
+             lng = ~ longitude,
+             clusterOptions = markerClusterOptions()) %>% 
+  addCircles(lat = ~ latitude,
+             lng = ~ longitude,
+             popup = ~ popup_info,
+             radius = 5,
+             weight = 5,
+             color = ~ type(primary_volcano_type)) %>% 
+  addLegend(data = volcano_selected,
+            title = "Type of volcano",
+            pal = type, 
+            values = ~ primary_volcano_type,
+            opacity = 1) %>% 
+  addScaleBar(position = "bottomleft")
+```
 
 ---
 
 Interesting Facts About Plot
+- The bubles are showing the total number of volcanos in those regions 
+- The color scheme is showing the different types of volcanos
+- The popups show the name of the volcano and when it last erupted 
 
 
 ### MAJOR ERUPTIONS SINCE 1700
