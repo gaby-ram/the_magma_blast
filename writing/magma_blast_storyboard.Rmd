@@ -55,6 +55,8 @@ colnames(c_and_c) <- c("country", "continent")
 head(eruptions)
 ```
 
+
+
 ### VOLCANOES AROUND THE WORLD
 
 ```{r include=FALSE}
@@ -128,8 +130,10 @@ leaflet(volcano_selected) %>%
   addScaleBar(position = "bottomleft")
 ```
 
+
 ---
 
+<<<<<<< HEAD
 **Interesting Facts**
 
 Volcanic terrain is the result of the accumulation of erupted lava, unlike mountains 
@@ -147,6 +151,15 @@ potentially active volcanos world wide.
 * The color scheme is showing the different types of volcanos
 
 * The popups show the name of the volcano and when it last erupted 
+=======
+Interesting Facts About Plot
+
+- The bubbles are showing the total number of volcanos in those regions
+
+- The color scheme is showing the different types of volcanoes
+
+- The popups show the name of the volcano and when it last erupted 
+>>>>>>> ac4137598506b55e3a4d04e2d265c1e9ba70c093
 
 
 ### MAJOR ERUPTIONS SINCE 1700
@@ -167,6 +180,10 @@ volcano_clean <- volcano %>%
   select("population_within_100_km", "longitude", "latitude", 
          "country","region", "volcano_number", "volcano_name", 
          "primary_volcano_type")
+volcano_continent <- volcano_clean %>% 
+  full_join(c_and_c, by = "country") %>% 
+  group_by(continent) %>% 
+  summarise(count = n())
 ##Joining tables based on cleaned eruption table
 final_table <- eruptions_clean %>% 
   left_join(volcano_clean, by = "volcano_name") %>% 
@@ -195,17 +212,17 @@ left <- final_table %>%
   scale_y_discrete(expand=c(0.025,0.025))+
   labs(x='', y='')+
   theme_get()+
-  guides(color = guide_legend(override.aes = list(size = 20)))+
+  guides(color = guide_legend(override.aes = list(size = 18)))+
   theme(legend.position = 'bottom', 
         legend.key = element_blank(),
-        legend.text = element_text(size=20),
+        legend.text = element_text(size=25),
         legend.title = element_text(face="bold", colour = "black"),
         panel.grid.major.y = element_line(colour= 'black'),
         panel.grid.major.x = element_line(colour = "white"),
         panel.border = element_blank(),
-        axis.text = element_text(size=20, colour='black'),
-        title = element_text(colour='black', size=30, face='bold', hjust=0),
-        plot.subtitle = element_text(colour='white', size=20, face='bold', hjust=0),
+        axis.text = element_text(size=30, colour='black'),
+        title = element_text(colour='black', size=50, face='bold', hjust=0),
+        plot.subtitle = element_text(colour='white', size=30, face='bold', hjust=0),
         plot.background = element_rect(color='white',fill = "white"),
         panel.background = element_rect(fill = "white",
                                         colour = "white",
@@ -227,17 +244,17 @@ right <- final_table %>%
             hjust = -0.2, color = "black")+
   scale_fill_discrete(name = "Volcano Type")+
   theme_get()+
-  guides(fill=guide_legend(ncol=3, override.aes = list(size = 13)))+
+  guides(fill=guide_legend(ncol=3, override.aes = list(size = 18)))+
   theme(legend.position = "bottom",
-        legend.text = element_text(size=20),
+        legend.text = element_text(size=25),
         legend.key = element_blank(),
-        axis.text.y = element_text(size=20, colour='black', hjust=0.5),
-        axis.text.x = element_text(size=20, colour='black'),
+        axis.text.y = element_text(size=30, colour='black', hjust=0.5),
+        axis.text.x = element_text(size=30, colour='black'),
         axis.line.x = element_line(color='black'),
         plot.background = element_rect(color='white', fill = "white"),
-        title = element_text(colour='black', size=30, face='bold', hjust=0),
+        title = element_text(colour='black', size=50, face='bold', hjust=0),
         panel.border = element_blank(),
-        plot.subtitle = element_text(colour='white', size=20, face='bold', hjust=0),
+        plot.subtitle = element_text(colour='white', size=30, face='bold', hjust=0),
         panel.background = element_rect(fill = "white",
                                     colour = "white",
                                     linewidth = 0.5, linetype = "solid"),
@@ -258,12 +275,27 @@ cowplot::plot_grid(left, right, rel_widths = c(1, 0.5), nrow=1)
 
 ---
 
-Interesting Facts About Plot
+**Interesting Facts About Plot**
+
+- There are about `r volcano$volcano_name %>% unique() %>% length()` volcanoes in the world.
+
+- These volcanoes are distributed across the globe with Asia having the highest number with
+`r volcano_continent %>% filter(continent == "Asia") %>% pull(count)` and Oceania having the 
+lowest number with `r volcano_continent %>% filter(continent == "Oceania") %>% pull(count)`.
+
+- The Volcanic Explosivity Index (VEI) is a scale that describes the size of explosive
+volcanic eruptions based on magnitude and intensity ranging from 1 (lowest) to 6 (highest).
+
+- There are also different types of volcanoes as listed:  `r volcano$primary_volcano_type %>% unique()`.
+
+- This plot shows major eruptions (VEI and year of eruption) from around the world
+since the 1700's while showing the continental location and country of each volcano. The plot also
+shows the population within 100,000 km of the volcano telling you the number of people that may be affected
+if any of these volcanoes erupt and the volcano type.
 
 
 ### VOLCANOES IN USA
 ```{r include=FALSE}
-
 glimpse(volcano)
 ```
 
