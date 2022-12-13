@@ -3,6 +3,8 @@ title: "The Magma Blast"
 output: 
   flexdashboard::flex_dashboard:
     storyboard: true
+    theme: journal
+    source_code: embeded
 ---
 ```{r setup, include=FALSE}
 library(flexdashboard)
@@ -57,9 +59,13 @@ head(eruptions)
 
 ### VOLCANOES AROUND THE WORLD
 
+<<<<<<< HEAD
 
 
 ```{r}
+=======
+```{r include=FALSE}
+>>>>>>> c3b0c64f208e3565582055b32cc87bf0528546e2
 template <- "<p>{volcano_name}</p><p>{last_eruption_year}</p"
 volcano_html <- volcano %>% 
   mutate(html = glue(template))
@@ -73,10 +79,11 @@ head(volcano_selected)
 total_years <- volcano_selected %>%  
   select(last_eruption_year) %>% 
   mutate(years = str_count(last_eruption_year))
+```
 
-previewColors(colorFactor("BuPu", domain = NULL), LETTERS[1:5])
-
+```{r the plot}
 type <- colorFactor(topo.colors(16), domain = volcano_selected$primary_volcano_type)
+
 
 leaflet(volcano_selected) %>%  
   addTiles() %>% 
@@ -106,7 +113,6 @@ total_years <- volcano_selected %>%
   select(last_eruption_year) %>% 
   mutate(years = str_count(last_eruption_year))
 
-previewColors(colorFactor("BuPu", domain = NULL), LETTERS[1:5])
 
 type <- colorFactor(topo.colors(16), domain = volcano_selected$primary_volcano_type)
 
@@ -133,6 +139,25 @@ leaflet(volcano_selected) %>%
 
 ---
 
+<<<<<<< HEAD
+**Interesting Facts**
+
+Volcanic terrain is the result of the accumulation of erupted lava, unlike mountains 
+that are the result of erosion of earth's crust, uplifting, folding, and faulting.
+A vent that connects the molten areas or molten rock(magma) are formed through a
+series of cracks beneath and within the volcano. Approximately there are 1,350
+potentially active volcanos world wide.
+[link](https://www.usgs.gov/programs/VHP/about-volcanoes)
+
+**About the Plot**
+
+
+* The bubbles are showing the total number of volcanos in those regions
+
+* The color scheme is showing the different types of volcanos
+
+* The popups show the name of the volcano and when it last erupted 
+=======
 Interesting Facts About Plot
 
 - The bubbles are showing the total number of volcanos in those regions
@@ -140,6 +165,7 @@ Interesting Facts About Plot
 - The color scheme is showing the different types of volcanoes
 
 - The popups show the name of the volcano and when it last erupted 
+>>>>>>> ac4137598506b55e3a4d04e2d265c1e9ba70c093
 
 
 ### MAJOR ERUPTIONS SINCE 1700 {data-commentary-width=400}
