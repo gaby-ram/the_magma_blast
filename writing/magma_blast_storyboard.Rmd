@@ -57,6 +57,8 @@ head(eruptions)
 
 ### VOLCANOES AROUND THE WORLD
 
+
+
 ```{r}
 template <- "<p>{volcano_name}</p><p>{last_eruption_year}</p"
 volcano_html <- volcano %>% 
@@ -140,7 +142,8 @@ Interesting Facts About Plot
 - The popups show the name of the volcano and when it last erupted 
 
 
-### MAJOR ERUPTIONS SINCE 1700
+### MAJOR ERUPTIONS SINCE 1700 {data-commentary-width=400}
+
 
 ```{r}
 ##cleaning eruption table
