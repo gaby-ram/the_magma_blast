@@ -237,7 +237,7 @@ volcano_clean <- volcano %>%
 final_table <- eruptions_clean %>% 
   left_join(volcano_clean, by = "volcano_name") %>% 
   full_join(c_and_c, by = "country") %>% 
-  mutate(volcano_name = fct_reorder(volcano_name, number_of_events),
+  mutate(volcano_name = fct_reorder(volcano_name, population_within_100_km),
          population = log10(population_within_100_km+1),
          long_lab = round(longitude, 0),
          long_lab_2 = ifelse(long_lab>0, paste0(long_lab, "N"), paste0(-long_lab, "S"))) %>% 
@@ -313,7 +313,7 @@ right <- final_table %>%
   ggtitle("Population and Country")
 ```
 
-```{r fig.dim = c(40, 20)}
+```{r fig.dim = c(50, 25)}
 cowplot::plot_grid(left, right, rel_widths = c(1, 0.5), nrow=1,  label_size=15)
 ```
 
