@@ -267,7 +267,7 @@ cowplot::plot_grid(left, right, rel_widths = c(1, 0.7), nrow=1)
 
 ---
 
-**Interesting Facts About Plot**
+**Interesting Facts**
 
 - There are about `r volcano$volcano_name %>% unique() %>% length()` active volcanoes in the world.
 
@@ -279,6 +279,8 @@ lowest number with `r volcano_continent %>% filter(continent == "Oceania") %>% p
 volcanic eruptions based on magnitude and intensity ranging from 1 (lowest) to 6 (highest).
 
 - There are also different types of volcanoes as listed:  `r volcano$primary_volcano_type %>% unique()`.
+
+**About Plot**
 
 - This plot shows major eruptions (VEI and year of eruption) from around the world
 since the 1700's while showing the continental location and country of each volcano. The plot also
