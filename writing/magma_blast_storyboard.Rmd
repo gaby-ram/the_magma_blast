@@ -103,7 +103,7 @@ volcano_selected <- volcano_html %>%
   select(volcano_name, latitude, longitude, primary_volcano_type, country, last_eruption_year, html) %>% 
   mutate(popup_info = paste("<b>Volcano name:<b>", volcano_name, "<br/>",
                             "<b>Last eruption year:<b>", last_eruption_year))
-head(volcano_selected)
+#head(volcano_selected)
 
 total_years <- volcano_selected %>%  
   select(last_eruption_year) %>% 
