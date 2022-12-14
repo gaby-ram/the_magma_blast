@@ -423,7 +423,21 @@ p2 +
 
 ---
 
-Interesting Facts About Plot
+Interesting Facts 
+
+The highest elevation volcano is in Washington named Mt. Rainier elevation 4392m
+
+The lowest elevation if a volcano is in California named Salton Buttes elevation -40m
+
+Fun fact about volcano's in the USA is that they are all on the western side of the continent. The last volcano in this data set to errupt was Semisopochnoi in 2020 in Alaska, its elevation is 1221m. 
+
+About Plot
+
+The volcanos are maped by elevation using a function called map-data with points plotted as sf points. scale_fill_viridis was used to create the color with the theme of magma because of volcanos.
+
+the elevations of the top 5 regions was created with geom_density_ridges_gradient which creates histogram like distributions of the volcano heights. The colorscheme was set to match with the points on the map.
+
+
 
 
 ### TIME SERIES PLOT
