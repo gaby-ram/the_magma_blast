@@ -70,7 +70,6 @@ volcano_selected <- volcano_html %>%
   select(volcano_name, latitude, longitude, primary_volcano_type, country, last_eruption_year, html) %>% 
   mutate(popup_info = paste("<b>Volcano name:<b>", volcano_name, "<br/>",
                             "<b>Last eruption year:<b>", last_eruption_year))
-head(volcano_selected)
 
 total_years <- volcano_selected %>%  
   select(last_eruption_year) %>% 
@@ -103,7 +102,6 @@ volcano_selected <- volcano_html %>%
   select(volcano_name, latitude, longitude, primary_volcano_type, country, last_eruption_year, html) %>% 
   mutate(popup_info = paste("<b>Volcano name:<b>", volcano_name, "<br/>",
                             "<b>Last eruption year:<b>", last_eruption_year))
-head(volcano_selected)
 
 total_years <- volcano_selected %>%  
   select(last_eruption_year) %>% 
@@ -141,7 +139,7 @@ leaflet(volcano_selected) %>%
 Volcanic terrain is the result of the accumulation of erupted lava, unlike mountains 
 that are the result of erosion of earth's crust, uplifting, folding, and faulting.
 A vent that connects the molten areas or molten rock(magma) are formed through a
-series of cracks beneath and within the volcano. Approximately there are 1,350
+series of cracks beneath and within the volcano. Approximately there are 956
 potentially active volcanos world wide.
 [link](https://www.usgs.gov/programs/VHP/about-volcanoes)
 
