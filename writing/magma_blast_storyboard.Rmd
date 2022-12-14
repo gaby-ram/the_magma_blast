@@ -257,7 +257,7 @@ right <- final_table %>%
   labs(x='', y='Population within 100km of Volcano')+
   scale_y_continuous(expand = c(0, 0), breaks=seq(0, 10, 2.5)) +
   scale_x_discrete(expand=c(0.025,0.025), label = long_lab_2) +
-  ggtitle("Population and Country")
+  ggtitle("Location, Population and Country")
 ```
 
 ```{r fig.dim = c(50, 25)}
@@ -271,7 +271,7 @@ cowplot::plot_grid(left, right, rel_widths = c(1, 0.7), nrow=1)
 
 **Interesting Facts About Plot**
 
-- There are about `r volcano$volcano_name %>% unique() %>% length()` volcanoes in the world.
+- There are about `r volcano$volcano_name %>% unique() %>% length()` active volcanoes in the world.
 
 - These volcanoes are distributed across the globe with Asia having the highest number with
 `r volcano_continent %>% filter(continent == "Asia") %>% pull(count)` and Oceania having the 
