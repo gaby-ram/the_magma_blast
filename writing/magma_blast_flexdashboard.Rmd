@@ -303,7 +303,7 @@ volcano_timeline = ggplot() +
         axis.text = element_text(colour = "#636363", face = "bold", size = 14),
         axis.text.y = element_text(colour = "#636363", face = "bold", size = 10),
         legend.position = "bottom",
-        legend.text = element_text(colour = "#636363", size = 14),
+        legend.text = element_text(colour = "#636363", size = 12),
         axis.title.y = element_text(colour = "#303030", size = 14, face = "bold"),
         #legend.background = element_rect(fill = "#B3B3B3"),
         )
